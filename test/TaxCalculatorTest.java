@@ -31,10 +31,6 @@ public class TaxCalculatorTest {
 
 
     @DataProvider(name = "taxFilingStatusDataProvider")
-    /**
-     * This is a data provider for tax status.  It will allow us to check that the filing status is retained properly.
-     * @return
-     */
     public Object[][] taxFilingStatusDataProvider() {
         return new Object[][]{new Object[]{TaxCalculatorInterface.SINGLE, 30, -1},
                 new Object[]{TaxCalculatorInterface.SINGLE, 30, -1},
@@ -69,13 +65,6 @@ public class TaxCalculatorTest {
     }
 
     @Test(dataProvider = "taxFilingStatusDataProvider")
-    /**
-     * This method will test the tax filing status.
-     * @param status This is the status that is to be used.
-     * @param age This is the age of the person.  Must be positive.
-     * @param spouseAge This is the age of the spouse.  -1 indicates there is no spouse.
-     * @throws Exception An exception will be thrown if there is an error, which there should not be.
-     */
     public void testStatus(int status, int age, int spouseAge) {
         if (spouseAge != -1) {
             // Instantiate a new tax calculator with a spouse.
@@ -90,10 +79,6 @@ public class TaxCalculatorTest {
     }
 
     @DataProvider(name = "singleStatusIsReturnRequiredDataProvider")
-    /**
-     * This is a data provider that is used for the single persons to determine if a return is required.
-     * @return
-     */
     public Object[][] singleStatusIsReturnRequiredDataProvider() {
         return new Object[][]{new Object[]{TaxCalculatorInterface.SINGLE, 30, 8949.00, false},
                 new Object[]{TaxCalculatorInterface.SINGLE, 30, 8950.00, true},
@@ -116,13 +101,6 @@ public class TaxCalculatorTest {
     }
 
     @Test(dataProvider = "singleStatusIsReturnRequiredDataProvider")
-    /**
-     * This method will test whether a return is required for single persons.
-     * @param status This is the status of the filer.
-     * @param age This is the age of the person.
-     * @param income This is the income of the person.
-     * @param returnRequired This will be true if a return is required or false if it is not required.
-     */
     public void testisReturnRequiredSingleStatus(int status, int age, double income, boolean returnRequired) {
         // Instantiate a new tax calculator.
         calculator = new TaxCalculator("Bob SMith", age, status);
@@ -154,16 +132,7 @@ public class TaxCalculatorTest {
     }
 
     @Test(dataProvider = "marriedStatusIsReturnRequiredDataProvider")
-    /**
-     * This method will test whether a return is required for single persons.
-     * @param status This is the status of the filer.
-     * @param age This is the age of the person.
-     * @param spouseAge This is the age of the spouse.
-     * @param income This is the income of the person.
-     * @param returnRequired This will be true if a return is required or false if it is not required.
-     * @throws Exception
-     */
-    public void testisReturnRequiredSingleStatus(int status, int age, int spouseAge, double income,
+    public void testIsReturnRequiredSingleStatus(int status, int age, int spouseAge, double income,
                                                  boolean returnRequired) throws IllegalArgumentException {
         // Instantiate a new tax calculator.
         calculator = new TaxCalculator("Bob SMith", status, age, spouseAge);
@@ -187,7 +156,7 @@ public class TaxCalculatorTest {
     }
 
     @Test(dataProvider = "standardDeductionDataProvider")
-    public void testisstandardDeduction(int status, int age, int spouseAge, double standardDeduction) throws IllegalArgumentException {
+    public void testIsStandardDeduction(int status, int age, int spouseAge, double standardDeduction) {
         if (spouseAge != -1) {
             // Instantiate a new tax calculator with a spouse.
             calculator = new TaxCalculator("Bob Smith", status, age, spouseAge);
@@ -315,16 +284,6 @@ public class TaxCalculatorTest {
     }
 
     @Test(dataProvider = "taxableIncomeDataProvider")
-    /**
-     * This method will verify the taxable income amount.  The taxable income amount is the income minus the standard deduction.
-     * @param status This is the filing status of the people.
-     * @param age This is the age of the filer.
-     * @param spouseAge This is the age of the spouse.
-     * @param grossIncome This is the gross income of the person filing.
-     * @param taxableIncome This is the taxable income, which is the gross income minus the standard deduction.
-     * @param taxDue This is the tax due, which is not used in this test.
-     * @throws Exception An exception being thrown indicates there is a problem with the implementation fo the method.
-     */
     public void testGetTaxableIncome(int status, int age, int spouseAge, double grossIncome, double taxableIncome,
                                      double taxDue) throws Exception {
         if (spouseAge != -1) {
