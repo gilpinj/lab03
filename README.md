@@ -6,7 +6,7 @@
 * Understand the importance of Code coverage in assessing testing of software deliverables
 * Use a code coverage tool to determine untested segments of source code.
 * Measure code coverage in Java using the ECL-Emma tool in IntelliJ.
-* Construct new JUnit test cases to increase code coverage.
+* Construct new TestNG test cases to increase code coverage.
 * Use external models to generate test cases for a project.
 
 ## Introduction
@@ -26,11 +26,10 @@ There are two approaches to code coverage analysis.  In the first case, the actu
 
 We will be using the EclEmma plug-in for IntelliJ which uses the JaCoCo code coverage tool to collect metrics about the code coverage obtained when you execute your program. The JaCoCo tool is an open-source code coverage analysis tool for Java.  It does not require instrumentation of the source code, and is highly effective at performing a code coverage analysis.
 
- ## Deliverables
+## Deliverables
 
- * You should create a branch or fork from the repository and "submit" your lab as a Pull Request.
- * Add a file called write-up.md to the repository.  In the write up include your name, email, include the following:
-   * A screenshot of your final code coverage
-   * An analysis of why, with specifics, you could not achieve 100% statement coverage.
-  * Your grade will be based upon the level of coverage achieved, and the quality of your analysis.
-
+* You should create a branch or fork from the repository and "submit" your lab as a Pull Request.
+* Add a file called write-up.md to the repository.  In the write up include your name, email, include the following:
+  * A screenshot of your final code coverage
+  * An analysis of why, with specifics, you could not achieve 100% statement coverage.
+* Your grade will primarily be based upon the level of coverage achieved, and the quality of your analysis.
