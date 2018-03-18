@@ -18,110 +18,75 @@ public class TaxCalculator implements TaxCalculatorInterface {
 	}
 
 	public void setName(String name) {
-		this.name = name;
+
+        if (name.length() <= 0) {
+            throw new IllegalArgumentException(
+                    "Name must be longer than 0 characters in length. ");
+        }
+
+        // Check to make certain that a first and last name is provided.
+        if (name.split("\\s+").length < 2) {
+            throw new IllegalArgumentException(
+                    "Name must have at least a first and last name.");
+        }
+
+	    this.name = name;
 	}
+
+	private TaxCalculator(String name, int age) {
+        setName(name);
+        setAge(age);
+    }
+
+    /**
+     * @param name         This is the name of the taxpayer. It must be a non-empty
+     *                     string.
+     * @param filingStatus This is the filing status for the person. Single, Head of
+     *                     Household, and Qualifying widower may use this constructor.
+     * @param age          This is the age of the taxpayer. Must be greater than 0 years.
+     * @throws IllegalArgumentException An exception will be thrown if any parameter is out of bounds
+     *                                  or the filing status is incorrect (i.e. the status requires a
+     *                                  spouse.) Exception will also be thrown if there is not a
+     *                                  first and last name provided.
+     */
+    public TaxCalculator(String name, int age, int filingStatus) {
+        this(name, age);
+
+        // Check that the age is valid.
+        if (age <= 0) {
+            throw new IllegalArgumentException("Invalid age.");
+        }
+
+        // Set the appropriate attributes of the class.
+
+        setFilingStatusSingle(filingStatus);
+
+    }
 
 	/**
 	 * @param name
 	 *            This is the name of the taxpayer. It must be a non-empty
 	 *            string.
-	 * @param filingStatus
-	 *            This is the filing status for the person. Single, Head of
-	 *            Household, and Qualifying widower may use this constructor.
 	 * @param age
 	 *            This is the age of the taxpayer. Must be greater than 0 years.
-	 * @throws Exception
-	 *             An exception will be thrown if any parameter is out of bounds
-	 *             or the filing status is incorrect (i.e. the status requires a
-	 *             spouse.) Exception will also be thrown if there is not a
-	 *             first and last name provided.
-	 */
-	public TaxCalculator(String name, int filingStatus, int age)
-			throws Exception {
-		// Check the validity of all parameters.
-		if (name.length() <= 0) {
-			throw new Exception(
-					"Name must be longer than 0 characters in length. ");
-		}
-
-		// Check to make certain that a first and last name is provided.
-		if (name.split("\\s+").length < 2) {
-			throw new Exception(
-					"Name must have at least a first and last name.");
-		}
-
-		// Check that the filing status is valid for a person who does not have
-		// a spouse.
-		if ((filingStatus != SINGLE) && (filingStatus != HEAD_OF_HOUSEHOLD)
-				&& (filingStatus != QUALIFYING_WIDOWER)) {
-			throw new Exception("Invalid filing status for this constructor.");
-		}
-
-		// Check that the age is valid.
-		if (age <= 0) {
-			throw new Exception("Invalid age.");
-		}
-
-		// Set the appropriate attributes of the class.
-		this.name = name;
-		this.filingStatus = filingStatus;
-		this.age = age;
-	}
-
-	/**
-	 * @param name
-	 *            This is the name of the taxpayer. It must be a non-empty
-	 *            string.
-	 * @param filingStatus
-	 *            This is the filing status for the person. Single, Head of
-	 *            Household, and Qualifying widower may not use this
-	 *            constructor.
-	 * @param age
-	 *            This is the age of the taxpayer. Must be greater than 0 years.
+     * @param filingStatus
+     *            This is the filing status for the person. Single, Head of
+     *            Household, and Qualifying widower may not use this
+     *            constructor.
 	 * @param spouseAge
 	 *            This is the age of the spouse. Must be greater than 0 years
 	 *            old.
-	 * @throws Exception
-	 *             An exception will be thrown if any parameter is out of bounds
-	 *             or the filing status is incorrect (i.e. the status does not
-	 *             require a spouse.) Exception will also be thrown if there is
-	 *             not a first and last name provided.
-	 */
-	public TaxCalculator(String name, int filingStatus, int age, int spouseAge)
-			throws Exception {
-		// Check the validity of all parameters.
-		if (name.length() <= 0) {
-			throw new Exception(
-					"Name must be longer than 0 characters in length. ");
-		}
+     * @throws IllegalArgumentException
+     *             An exception will be thrown if any parameter is out of bounds
+     *             or the filing status is incorrect (i.e. the status requires a
+     *             spouse.) Exception will also be thrown if there is not a
+     *             first and last name provided.
+     */
+	public TaxCalculator(String name, int age, int filingStatus, int spouseAge)  {
 
-		// Check to make certain that a first and last name is provided.
-		if (name.split("\\s+").length < 2) {
-			throw new Exception(
-					"Name must have at least a first and last name.");
-		}
-
-		// Check to make certain that the status is correct.
-		if ((filingStatus != MARRIED_FILING_JOINTLY)
-				&& (filingStatus != MARRIED_FILING_SEPARATELY)) {
-			throw new Exception("Invalid filing status for this constructor.");
-		}
-
-		// Check that the age is valid.
-		if (age <= 0) {
-			throw new Exception("Invalid age.");
-		}
-
-		// Check that the spouse age is valid.
-		if (spouseAge <= 0) {
-			throw new Exception("Invalid Age.");
-		}
-
-		// Set the attributes.
-		this.name = name;
-		this.filingStatus = filingStatus;
-		this.age = age;
-		this.spouseAge = spouseAge;
+	    this(name, age);
+        setFilingStatusMarried(filingStatus);
+        setSpouseAge(spouseAge);
 	}
 
 	/*
@@ -265,12 +230,7 @@ public class TaxCalculator implements TaxCalculatorInterface {
 				currentThreshold = 17900;
 			}
 		}
-		if (this.grossIncome < currentThreshold) {
-			return false;
-		} else {
-
-			return true;
-		}
+		return !(this.grossIncome < currentThreshold);
 	}
 
 	/*
@@ -413,4 +373,39 @@ public class TaxCalculator implements TaxCalculatorInterface {
 			return 0.0;
 		}
 	}
+
+    private void setFilingStatusSingle(int filingStatus) {
+        // Check that the filing status is valid for a person who does not have
+        // a spouse.
+        if ((filingStatus != SINGLE) && (filingStatus != HEAD_OF_HOUSEHOLD)
+                && (filingStatus != QUALIFYING_WIDOWER)) {
+            throw new IllegalArgumentException("Invalid filing status for this constructor.");
+        }
+        this.filingStatus = filingStatus;
+    }
+
+    private void setFilingStatusMarried(int filingStatus) {
+
+        if ((filingStatus != MARRIED_FILING_JOINTLY)
+                && (filingStatus != MARRIED_FILING_SEPARATELY)) {
+            throw new IllegalArgumentException("Invalid filing status for this constructor.");
+        }
+
+        this.filingStatus = filingStatus;
+    }
+
+    private void setAge(int age) {
+        if (age <= 0) {
+            throw new IllegalArgumentException("Invalid Age.");
+        }
+        this.age = age;
+    }
+
+    private void setSpouseAge(int spouseAge) {
+        // Check that the spouse age is valid.
+        if (spouseAge <= 0) {
+            throw new IllegalArgumentException("Invalid Age.");
+        }
+        this.spouseAge = spouseAge;
+    }
 }
