@@ -63,7 +63,7 @@ public class TaxCalculatorTest {
     @Test(dataProvider = "marriedTaxFilingStatusDataProvider")
     public void testStatus(int status, int age, int spouseAge) {
         calculator = new TaxCalculator("Bob Smith", age, status, spouseAge);
-        assertEquals(status, status);
+        assertEquals(calculator.getFilingStatus(), status);
     }
 
     @DataProvider(name = "singleStatusIsReturnRequiredDataProvider")
