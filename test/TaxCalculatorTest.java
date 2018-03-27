@@ -23,12 +23,74 @@ public class TaxCalculatorTest {
         calculator = new TaxCalculator("Bob", 21, TaxCalculatorInterface.SINGLE);
     }
 
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testSetFilingStatusMarriedForSingle() {
+        calculator = new TaxCalculator("Hingle McCringleberry", 40, TaxCalculator.MARRIED_FILING_JOINTLY);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testSetFilingStatusSingleForMarried() {
+        calculator = new TaxCalculator("Scoish Velociraptor Maloish", 28, TaxCalculator.SINGLE, 27);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testSetAgeNegative() throws IllegalArgumentException {
+        calculator = new TaxCalculator("D'Isiah T. Billings-Clyde", -1, TaxCalculator.SINGLE);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testSetSpouseAgeNegative() throws IllegalArgumentException {
+        calculator = new TaxCalculator("Javaris Jamar Javarison-Lamar", 40, TaxCalculator.MARRIED_FILING_JOINTLY, -1);
+    }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testNoNameProvidedForSingleFilerShouldThrowException() throws IllegalArgumentException {
         calculator = new TaxCalculator("", 21, TaxCalculatorInterface.SINGLE);
     }
 
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testTaxCalculatorWithNegativeAge() {
+        calculator = new TaxCalculator("T.J. A.J. R.J. Backslashinfourth V", -2, TaxCalculator.SINGLE);
+    }
+
+    @Test
+    public void testGetName() {
+        // Arrange
+        calculator = new TaxCalculator("Jackmerius Tacktheritrix", 24, TaxCalculatorInterface.SINGLE);
+        String expectedName = "Jackmerius Tacktheritrix";
+
+        // Act
+        String actualName = calculator.getName();
+
+        // Assert
+        assertEquals(actualName, expectedName);
+    }
+
+    @Test
+    public void testGetAge() {
+        // Arrange
+        calculator = new TaxCalculator("Torque (Construction Noise) Lewith", 22, TaxCalculator.SINGLE);
+        int expectedAge = 22;
+
+        // Act
+        int actualAge = calculator.getAge();
+
+        // Assert
+        assertEquals(actualAge, expectedAge);
+    }
+
+    @Test
+    public void testGetSpouseAge() {
+        // Arrange
+        calculator = new TaxCalculator("Xmus Jaxon Flaxon-Waxon", 100, TaxCalculator.MARRIED_FILING_JOINTLY, 100);
+        int expectedAge = 100;
+
+        // Act
+        int actualAge = calculator.getSpouseAge();
+
+        // Assert
+        assertEquals(actualAge, expectedAge);
+    }
 
     @DataProvider(name = "singleTaxFilingStatusDataProvider")
     public Object[][] singleTaxFilingStatusDataProvider() {
@@ -149,11 +211,18 @@ public class TaxCalculatorTest {
         assertEquals(calculator.getStandardDeduction(), standardDeduction, 1.00);
     }
 
+    @Test
+    public void testGetStandardDeductionForHeadOfHousehold() {
+        calculator = new TaxCalculator("Saggitariutt Jefferspin", 65, TaxCalculator.HEAD_OF_HOUSEHOLD);
+
+        assertEquals(calculator.getStandardDeduction(), 9050.0);
+    }
+
     @DataProvider(name = "standardDeductionForMarriedStatusesDataProvider")
     public Object[][] standardDeductionForMarriedStatusesDataProvider() {
         return new Object[][]{
                 new Object[]{TaxCalculatorInterface.MARRIED_FILING_JOINTLY, 30, 40, 10900.00},
-                new Object[]{TaxCalculatorInterface.MARRIED_FILING_SEPARATELY, 70, 70, 6500.00},
+                new Object[]{TaxCalculatorInterface.MARRIED_FILING_SEPARATELY, 70, 70, 6500.00}
         };
     }
 
@@ -358,6 +427,32 @@ public class TaxCalculatorTest {
         assertEquals(calculator.getTaxDue(), taxDue, 0.01);
     }
 
+    @Test
+    public void testGetTaxDueForHeadOfHousehold() {
+        // Arrange
+        calculator = new TaxCalculator("Sequester Grundelplith M.D.", 31, TaxCalculator.HEAD_OF_HOUSEHOLD);
+        double expectedTaxDue = 0.0;
+
+        // Act
+        double taxDue = calculator.getTaxDue();
+
+        // Assert
+        assertEquals(taxDue, expectedTaxDue);
+    }
+
+    @Test
+    public void testGetTaxDueForMarriedFilingSeparately() {
+        // Arrange
+        calculator = new TaxCalculator("The Player Formerly Known as Mousecop", 31, TaxCalculator.MARRIED_FILING_SEPARATELY, 30);
+        double expectedTaxDue = 0.0;
+
+        // Act
+        double taxDue = calculator.getTaxDue();
+
+        // Assert
+        assertEquals(taxDue, expectedTaxDue);
+    }
+
     @Test(dataProvider = "taxableIncomeForMarriedStatusesDataProvider")
     public void testTaxDueShouldBeCorrectForMarriedStatuses(int status, int age, int spouseAge, double grossIncome, double taxableIncome,
                               double taxDue) {
@@ -369,5 +464,17 @@ public class TaxCalculatorTest {
 
         // Assert - Now check the taxable income.
         assertEquals(calculator.getTaxDue(), taxDue, 0.01);
+    }
+
+    @Test
+    public void testNetTaxRateWithNegativeGrossIncome() {
+        // Arrange
+        calculator = new TaxCalculator("D'Glester Hardunkichud", 42, TaxCalculator.SINGLE);
+
+        // Act
+        calculator.setGrossIncome(-1);
+
+        // Assert
+        assertEquals(calculator.getNetTaxRate(), 0.0);
     }
 }
